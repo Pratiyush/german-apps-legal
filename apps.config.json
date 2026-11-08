@@ -1,0 +1,21 @@
+{
+  "_comment": "Single source for names and publish state. Rename an app: set its name here, run `node tools/build.mjs`, then `node tools/check.mjs`. A null name keeps the literal {{APP_NAME}} token in that app's pages (allowed only while published is false).",
+  "stand": { "de": "8. November 2026", "en": "8 November 2026" },
+  "baseUrl": "https://pratiyush.github.io/german-apps-legal",
+  "provider": {
+    "name": "Pratiyush Kumar Singh",
+    "street": "Im Dammwald 8B",
+    "city": "61381 Friedrichsdorf",
+    "countryDe": "Deutschland",
+    "countryEn": "Germany",
+    "phoneDisplay": "+49 151 75353711",
+    "phoneHref": "+4915175353711",
+    "email": "pratiyush1@gmail.com"
+  },
+  "apps": {
+    "lernle":     { "name": "Lernle",     "published": true },
+    "wortschatz": { "name": "Wortschatz", "published": true },
+    "wordbit":    { "name": null,         "published": false },
+    "readle":     { "name": null,         "published": false }
+  }
+}
