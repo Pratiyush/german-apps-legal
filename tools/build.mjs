@@ -35,11 +35,20 @@ ${CSS}
 </style>
 </head>
 <body>
-${nav ? `<nav>${nav}</nav>\n` : ''}${draft ? '<p class="draft">ENTWURF · DRAFT – App-Name noch nicht festgelegt, nicht veröffentlichen · name not chosen yet, do not publish</p>\n' : ''}${body}
+${nav ? `<nav>${nav}</nav>\n` : ''}${draft ? `<p class="draft">${draft}</p>\n` : ''}${body}
 </body>
 </html>
 `;
 }
+
+/** Banner text for an unpublished slug (false once published). Unnamed drafts wait for a name, named ones for launch. */
+const draftOf = (slug) => {
+  const app = cfg.apps[slug];
+  if (app.published) return false;
+  return app.name
+    ? 'ENTWURF · DRAFT – noch nicht veröffentlicht, nicht verlinken · not published yet, do not link'
+    : 'ENTWURF · DRAFT – App-Name noch nicht festgelegt, nicht veröffentlichen · name not chosen yet, do not publish';
+};
 
 const NAV = `<a href="../">Alle Apps · All apps</a> · <a href="privacy.html">Datenschutz · Privacy</a> · <a href="impressum.html">Impressum</a>`;
 const mail = `<a href="mailto:${P.email}">${P.email}</a>`;
@@ -49,6 +58,9 @@ function sections(a, L) {
   const s = [];
   s.push([de ? 'Verantwortlicher' : 'Controller',
     `<p>${P.name}, ${P.street}, ${P.city}, ${de ? P.countryDe : P.countryEn} · ${de ? 'E-Mail' : 'Email'}: ${mail}</p>`]);
+
+  // A service that is not an ad-funded offline app (e.g. the Telegram bot) brings all its sections in apps.mjs.
+  if (a.sections) return render([...s, ...a.sections[L]]);
 
   const short = de ? [
     `Kein Konto, keine Anmeldung. ${a.bundled.de} sind in der App enthalten; das Lernen funktioniert auch offline.`,
@@ -119,18 +131,20 @@ ${todo('Code cannot show the AdMob console. If "Privacy & messaging" gets a US s
     ? '<p>Wenn eine neue Version der App Daten anders verarbeitet, passen wir diese Erklärung an, bevor die Version erscheint. Es gilt die hier veröffentlichte Fassung; das Datum oben zeigt den Stand.</p>'
     : '<p>If a new version of the app processes data differently, we update this policy before that version is released. The version published here applies; the date at the top shows when it was last updated.</p>']);
 
-  return s.map(([h, html], i) => `<h3>${i + 1}. ${h}</h3>\n${html}`).join('\n\n');
+  return render(s);
 }
+
+const render = (s) => s.map(([h, html], i) => `<h3>${i + 1}. ${h}</h3>\n${html}`).join('\n\n');
 
 function privacy(slug, a) {
   const st = cfg.stand;
   const todos = a.todos.map(todo).join('\n');
   return page({
     title: `Datenschutz · Privacy – ${TOKEN}`,
-    draft: !cfg.apps[slug].published,
+    draft: draftOf(slug),
     nav: NAV,
     body: `${todos ? todos + '\n' : ''}<h1>Datenschutzerklärung · Privacy Policy</h1>
-<p>Stand: ${st.de} · Last updated: ${st.en} · App „${TOKEN}“ (Android, iOS)</p>
+<p>Stand: ${st.de} · Last updated: ${st.en} · ${a.subject ?? `App „${TOKEN}“ (Android, iOS)`}</p>
 <p><a href="#de">Deutsch</a> · <a href="#en">English</a></p>
 
 <h2 id="de">Deutsch</h2>
@@ -143,10 +157,11 @@ ${sections(a, 'en')}`,
   });
 }
 
-function impressum(slug) {
+function impressum(slug, a) {
+  const applies = a.appliesTo ?? { de: `die App „${TOKEN}“ (Android, iOS)`, en: `the app "${TOKEN}" (Android, iOS)` };
   return page({
     title: `Impressum – ${TOKEN}`,
-    draft: !cfg.apps[slug].published,
+    draft: draftOf(slug),
     nav: NAV,
     body: `<h1>Impressum</h1>
 <p>Angaben gemäß § 5 DDG · Provider information</p>
@@ -154,8 +169,8 @@ function impressum(slug) {
 <p>Telefon: <a href="tel:${P.phoneHref}">${P.phoneDisplay}</a><br>E-Mail: ${mail}</p>
 ${todo('If a USt-IdNr. or Wirtschafts-Identifikationsnummer is issued (e.g. once the Gewerbe for AdMob payouts is registered), add it here: § 5 Abs. 1 Nr. 6 DDG.')}
 <h3>Gilt für · Applies to</h3>
-<p>Diese Angaben gelten für die App „${TOKEN}“ (Android, iOS) und diese Seiten.</p>
-<p>This information applies to the app "${TOKEN}" (Android, iOS) and these pages.</p>
+<p>Diese Angaben gelten für ${applies.de} und diese Seiten.</p>
+<p>This information applies to ${applies.en} and these pages.</p>
 <h3>Verbraucherstreitbeilegung · Consumer dispute resolution</h3>
 <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 <p>We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board.</p>`,
@@ -190,7 +205,7 @@ for (const slug of Object.keys(cfg.apps)) {
   const a = APPS[slug];
   if (!a) throw new Error(`apps.mjs has no facts for slug "${slug}"`);
   write(`${slug}/privacy.html`, privacy(slug, a), slug);
-  write(`${slug}/impressum.html`, impressum(slug), slug);
+  write(`${slug}/impressum.html`, impressum(slug, a), slug);
 }
 write('index.html', index(), null);
 writeFileSync(join(ROOT, '.nojekyll'), '');

@@ -16,6 +16,7 @@
     "lernle":     { "name": "Lernle",     "published": true },
     "wortschatz": { "name": "Wortschatz", "published": true },
     "wordbit":    { "name": null,         "published": false },
-    "readle":     { "name": null,         "published": false }
+    "readle":     { "name": null,         "published": false },
+    "telegram":   { "name": "Daily German", "published": false }
   }
 }

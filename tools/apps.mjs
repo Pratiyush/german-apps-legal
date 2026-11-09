@@ -144,6 +144,102 @@ ${ADS_PERMS.en}`,
       'Readle also exists as a web app / PWA (readle/src, no ads, data in browser localStorage, content fetched from its own host). This page covers the Android and iOS apps only. If the web version is published under this name, add a short web section (hosting provider, server log files) or give it its own policy.',
     ],
   },
+
+  // Telegram bot: a server-side service, so it brings its own sections (no AdMob, no store download).
+  // Checked on 9 Nov 2026 against telegram-bot/src (db.ts, bot.ts, core.ts, cron.ts, index.ts, format.ts),
+  // public/app/index.html, wrangler.toml and migrations/0001–0002. Source text: telegram-bot/docs/privacy-notice.md.
+  telegram: {
+    subject: `Telegram-Bot „${N}“`,
+    appliesTo: { de: `den Telegram-Bot „${N}“`, en: `the Telegram bot "${N}"` },
+    sections: {
+      de: [
+        ['Kurz gesagt', `<ul>
+  <li>Sie nutzen den Bot mit Ihrem Telegram-Konto; ein eigenes Konto gibt es nicht. Gespeichert werden nur Ihre Telegram-Nutzer-ID, Ihre Auswahl (Niveau, Erklärungssprache, Uhrzeit) und Ihr Lernstand.</li>
+  <li>Ihren Namen, Nutzernamen, Ihr Profilbild, Ihre Telefonnummer und die Texte Ihrer Nachrichten speichert der Bot nicht.</li>
+  <li>Keine Werbung, keine Analyse- oder Tracking-Software. Wir verkaufen oder teilen keine Daten.</li>
+  <li>Der Bot läuft bei Cloudflare (Datenbank in Westeuropa); die Nachrichten stellt Telegram zu.</li>
+  <li><code>/mydata</code> zeigt Ihre Daten, <code>/delete</code> löscht sie sofort, <code>/stop</code> pausiert die täglichen Wörter.</li>
+</ul>`],
+        ['Welche Daten der Bot speichert', `<p>Wenn Sie den Bot mit <code>/start</code> beginnen, legt er in seiner Datenbank (Cloudflare D1) einen Eintrag zu Ihrer Telegram-Nutzer-ID an. Gespeichert werden:</p>
+<ul>
+<li><strong>Kennung:</strong> Ihre Telegram-Nutzer-ID (zugleich die ID Ihres Chats mit dem Bot) – die einzige Kennung, die wir speichern.</li>
+<li><strong>Ihre Auswahl:</strong> Niveau (A1, A2, B1, B2 oder alle Niveaus nacheinander), Sprache der Erklärungen, tägliche Uhrzeit (7, 8, 12, 18 oder 20 Uhr, Berliner Zeit) und ob die täglichen Wörter an oder pausiert sind.</li>
+<li><strong>Zustellungen:</strong> welches Wortpaket Sie an welchem Tag bekommen haben, mit Zustellstatus und Anzahl der Versuche – damit Sie kein Paket doppelt bekommen.</li>
+<li><strong>Lernstand:</strong> je Wort die Anzahl richtiger und falscher Quiz-Antworten, das letzte Ergebnis und dessen Zeitpunkt; die gerade offene Quizfrage (Wort, Fragetyp, Antwortmöglichkeiten); Ihre Serie, beste Serie und der letzte Quiz-Tag; Ihre Position bei <code>/word</code>.</li>
+<li><strong>Zeitpunkte:</strong> wann Sie den Bot zum ersten Mal genutzt haben und wann sich Ihr Eintrag zuletzt geändert hat.</li>
+</ul>
+<p>Wenn Sie dem Bot schreiben oder eine Schaltfläche antippen, übermittelt Telegram die Nachricht zusammen mit Ihrem öffentlichen Profil (z. B. Name, Nutzername, Spracheinstellung) an den Bot. Er verarbeitet sie nur, um in diesem Moment zu antworten, und speichert davon nichts außer den oben genannten Angaben. Nach Telefonnummer, Standort oder Kontakten fragt der Bot nicht.</p>
+<p>Im Kanal, in dem der Bot Wörter veröffentlicht, sind die Quiz-Umfragen anonym. Der Bot erfährt nicht, wer den Kanal liest oder abstimmt, und speichert dazu nichts.</p>
+<p>Rechtsgrundlage: Erbringung des Dienstes, den Sie mit <code>/start</code> anfordern (Art. 6 Abs. 1 lit. b DSGVO).</p>`],
+        ['Betriebsprotokolle', `<p>Damit der Bot zuverlässig läuft, protokolliert er jeden stündlichen Lauf (Zeitpunkt, Zahl der gesendeten und fehlgeschlagenen Nachrichten, eine kurze Notiz ohne Angaben zu Personen) und jeden Fehler mit seiner Fehlermeldung. Bei einer fehlgeschlagenen Zustellung enthält der Fehlereintrag Ihre Telegram-Nutzer-ID und das Wortpaket. Diese Einträge werden nach 30 Tagen automatisch gelöscht. Störungsmeldungen an den Betreiber enthalten nur Zahlen und Fehlermeldungen, keine Nutzer-IDs.</p>
+<p>Rechtsgrundlage: unser berechtigtes Interesse an einem zuverlässigen Dienst und an der Fehlersuche (Art. 6 Abs. 1 lit. f DSGVO).</p>`],
+        ['Lernkarten (Telegram Mini App)', `<p>Unter Beiträgen im Kanal kann eine Schaltfläche „Flashcards üben“ eine Lernkarten-Ansicht öffnen (Telegram Mini App). Sie wird in Telegram von Cloudflare geladen; dabei verarbeitet Cloudflare die IP-Adresse und Browser-Angaben Ihres Geräts, soweit das technisch nötig ist, um die Dateien auszuliefern. Die Mini App lädt außerdem ein Skript von Telegram (telegram.org).</p>
+<p>Welche Karten Sie mit „Kann ich“ markiert haben, speichert die Mini App im Telegram-Cloud-Speicher dieses Bots in Ihrem Telegram-Konto oder, falls der nicht verfügbar ist, im lokalen Speicher Ihres Geräts. Die Mini App überträgt diese Markierungen nicht an uns; wir können sie weder lesen noch löschen.</p>
+<p>Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO; das Speichern auf Ihrem Gerät ist für die von Ihnen genutzte Funktion unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG).</p>`],
+        ['Hosting: Cloudflare (Auftragsverarbeiter)', `<p>Der Bot, seine Datenbank und die Videos, Hördateien und Lernkarten, die er verschickt, liegen bei Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA (Cloudflare Workers, D1, KV). Die Datenbank liegt in Westeuropa (Cloudflare-Standort „WEUR“). Der kleine Statusspeicher (KV) enthält nur Angaben zum letzten stündlichen Lauf, keine Daten über Sie. Der Programmcode läuft im weltweiten Netz von Cloudflare.</p>
+<p>Cloudflare verarbeitet die Daten in unserem Auftrag nach einem Vertrag zur Auftragsverarbeitung (Art. 28 DSGVO). Soweit Daten in die USA gelangen: Cloudflare, Inc. ist nach dem EU-US Data Privacy Framework zertifiziert (Angemessenheitsbeschluss der EU-Kommission, Art. 45 DSGVO); der Vertrag enthält zusätzlich die Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO). Mehr: <a href="https://www.cloudflare.com/privacypolicy/">Datenschutzerklärung von Cloudflare</a>.</p>`],
+        ['Telegram', `<p>Der Bot ist ein Dienst auf der Plattform Telegram. Ihre Nachrichten an den Bot, Ihre Antworten über Schaltflächen und alles, was der Bot Ihnen schickt, übermittelt und speichert Telegram nach eigenen Bedingungen; Ihr Chat-Verlauf bleibt in Telegram, bis Sie ihn dort löschen. Für diese Verarbeitung ist Telegram selbst verantwortlich; Telegram ist nicht unser Auftragsverarbeiter und kann Daten außerhalb der EU verarbeiten. Es gilt die <a href="https://telegram.org/privacy">Datenschutzerklärung von Telegram</a>.</p>
+<p>Wir übergeben Telegram Ihre Telegram-Nutzer-ID und die Inhalte, die der Bot Ihnen schickt (Wörter, Videos, Hördateien, Quizfragen), weil der Dienst nur so zugestellt werden kann (Art. 6 Abs. 1 lit. b DSGVO; für eine Übermittlung außerhalb der EU Art. 49 Abs. 1 lit. b DSGVO).</p>`],
+        ['Speicherdauer und Löschung', `<ul>
+<li><strong>Solange Sie den Bot nutzen,</strong> bleiben Ihre Angaben gespeichert.</li>
+<li><strong><code>/delete</code></strong> löscht sofort Ihren Eintrag, Ihre Zustellungen, Ihren Lernstand und die offene Quizfrage; <code>/start</code> beginnt danach neu. Fehlereinträge, die Ihre Nutzer-ID enthalten können, werden wie alle Betriebsprotokolle nach 30 Tagen gelöscht.</li>
+<li><strong><code>/stop</code></strong> (oder „Pause“ in <code>/settings</code>) beendet die täglichen Wörter; Ihr Lernstand bleibt, damit Sie mit <code>/start</code> weitermachen können. Dasselbe gilt, wenn Sie den Bot blockieren (das bemerkt er bei der nächsten Zustellung) oder die Einrichtung nach der Wahl des Niveaus nicht abschließen. Nutzen Sie den Bot danach 12 Monate lang nicht (keine Quiz-Antwort, kein <code>/word</code>, keine Änderung der Einstellungen), löscht er alle Ihre Daten automatisch.</li>
+<li><strong>Betriebsprotokolle</strong> werden nach 30 Tagen gelöscht.</li>
+<li><strong>E-Mails</strong> löschen wir, sobald die Anfrage erledigt ist und keine gesetzliche Aufbewahrungspflicht besteht.</li>
+</ul>`],
+        ['Kontakt per E-Mail', '<p>Wenn Sie uns schreiben, verwenden wir Ihre Nachricht nur zur Beantwortung (Art. 6 Abs. 1 lit. f DSGVO) und löschen sie, wenn sie erledigt ist.</p>'],
+        ['Ihre Rechte', `<p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15–21 DSGVO). Im Bot zeigt <code>/mydata</code> eine Übersicht Ihrer gespeicherten Daten, <code>/settings</code> ändert Niveau, Sprache und Uhrzeit, <code>/delete</code> löscht alles. Eine vollständige Kopie (z. B. Ihre Quiz-Ergebnisse je Wort) erhalten Sie per E-Mail an den Verantwortlichen; nennen Sie dabei Ihre Telegram-Nutzer-ID, die <code>/mydata</code> anzeigt. Wir können Sie bitten, die Anfrage über Telegram zu bestätigen. Der Verarbeitung von Betriebsprotokollen (Art. 6 Abs. 1 lit. f DSGVO) können Sie aus Gründen, die sich aus Ihrer besonderen Situation ergeben, widersprechen (Art. 21 DSGVO). Zu Daten, die Telegram verarbeitet, wenden Sie sich bitte an Telegram. Sie können sich bei jeder Datenschutz-Aufsichtsbehörde beschweren, z. B. beim Hessischen Beauftragten für Datenschutz und Informationsfreiheit, Gustav-Stresemann-Ring 1, 65189 Wiesbaden.</p>`],
+        ['Kinder', '<p>Der Bot richtet sich nicht an Kinder unter 13 Jahren. Wir erheben wissentlich keine Daten von Kindern.</p>'],
+        ['Änderungen', '<p>Wenn der Bot Daten anders verarbeitet (etwa durch eine neue Funktion oder ein Bezahlangebot), passen wir diese Erklärung an, bevor die Änderung gilt. Es gilt die hier veröffentlichte Fassung; das Datum oben zeigt den Stand.</p>'],
+      ],
+      en: [
+        ['In short', `<ul>
+  <li>You use the bot with your Telegram account; there is no separate account. The bot stores only your Telegram user ID, your choices (level, explanation language, time) and your learning progress.</li>
+  <li>The bot does not store your name, username, profile picture, phone number or the text of your messages.</li>
+  <li>No ads, no analytics or tracking software. We do not sell or share data.</li>
+  <li>The bot runs on Cloudflare (database in Western Europe); Telegram delivers the messages.</li>
+  <li><code>/mydata</code> shows your data, <code>/delete</code> erases it at once, <code>/stop</code> pauses the daily words.</li>
+</ul>`],
+        ['What the bot stores', `<p>When you begin with <code>/start</code>, the bot creates an entry for your Telegram user ID in its database (Cloudflare D1). It stores:</p>
+<ul>
+<li><strong>Identifier:</strong> your Telegram user ID (which is also the ID of your chat with the bot) – the only identifier we keep.</li>
+<li><strong>Your choices:</strong> level (A1, A2, B1, B2 or all levels in sequence), the language for explanations, the daily time (7, 8, 12, 18 or 20 o'clock, Berlin time) and whether the daily words are on or paused.</li>
+<li><strong>Deliveries:</strong> which word batch you received on which day, with its delivery status and number of attempts – so you never get a batch twice.</li>
+<li><strong>Progress:</strong> per word the number of right and wrong quiz answers, the last result and when it was; the quiz question currently open (word, question type, options); your streak, best streak and last quiz day; your position in <code>/word</code>.</li>
+<li><strong>Timestamps:</strong> when you first used the bot and when your entry last changed.</li>
+</ul>
+<p>When you write to the bot or tap a button, Telegram passes the message to the bot together with your public profile (e.g. name, username, language setting). The bot uses it only to answer at that moment and keeps nothing of it beyond the items above. The bot never asks for your phone number, location or contacts.</p>
+<p>In the channel where the bot publishes words, the quiz polls are anonymous. The bot does not learn who reads the channel or votes, and stores nothing about it.</p>
+<p>Legal basis: providing the service you request with <code>/start</code> (Art. 6(1)(b) GDPR).</p>`],
+        ['Operation logs', `<p>To keep the bot reliable, it records every hourly run (time, number of messages sent and failed, a short note that identifies no one) and every error with its error message. For a failed delivery, the error entry contains your Telegram user ID and the word batch. These entries are deleted automatically after 30 days. Fault alerts to the operator contain only counts and error messages, no user IDs.</p>
+<p>Legal basis: our legitimate interest in a reliable service and in finding faults (Art. 6(1)(f) GDPR).</p>`],
+        ['Flashcards (Telegram Mini App)', `<p>Under posts in the channel, a "Flashcards üben" button may open a flashcard view (Telegram Mini App). Telegram loads it from Cloudflare; Cloudflare processes your device's IP address and browser details as far as technically needed to deliver the files. The Mini App also loads a script from Telegram (telegram.org).</p>
+<p>Which cards you marked "Kann ich" (I know it) is saved by the Mini App in this bot's Telegram cloud storage in your Telegram account or, if that is unavailable, in your device's local storage. The Mini App does not send these marks to us; we can neither read nor delete them.</p>
+<p>Legal basis: Art. 6(1)(b) GDPR; storing on your device is strictly necessary for the feature you use (§ 25(2) no. 2 TDDDG).</p>`],
+        ['Hosting: Cloudflare (processor)', `<p>The bot, its database and the videos, audio files and flashcards it sends are hosted by Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA (Cloudflare Workers, D1, KV). The database is located in Western Europe (Cloudflare location "WEUR"). The small status store (KV) holds only details of the last hourly run, no data about you. The code runs on Cloudflare's global network.</p>
+<p>Cloudflare processes the data on our behalf under a data processing agreement (Art. 28 GDPR). Where data reaches the USA: Cloudflare, Inc. is certified under the EU-US Data Privacy Framework (adequacy decision of the European Commission, Art. 45 GDPR), and the agreement also includes the European Commission's standard contractual clauses (Art. 46(2)(c) GDPR). More: <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare Privacy Policy</a>.</p>`],
+        ['Telegram', `<p>The bot is a service on the Telegram platform. Telegram transmits and stores your messages to the bot, your button taps and everything the bot sends you under its own terms; your chat history stays in Telegram until you delete it there. Telegram is itself responsible for this processing; it is not our processor and may process data outside the EU. <a href="https://telegram.org/privacy">Telegram's Privacy Policy</a> applies.</p>
+<p>We give Telegram your Telegram user ID and the content the bot sends you (words, videos, audio files, quiz questions), because that is the only way to deliver the service (Art. 6(1)(b) GDPR; for any transfer outside the EU, Art. 49(1)(b) GDPR).</p>`],
+        ['Retention and deletion', `<ul>
+<li><strong>While you use the bot,</strong> your details stay stored.</li>
+<li><strong><code>/delete</code></strong> erases your entry, your deliveries, your progress and the open quiz question at once; <code>/start</code> then begins fresh. Error entries that may contain your user ID are deleted after 30 days, like all operation logs.</li>
+<li><strong><code>/stop</code></strong> (or "Pause" in <code>/settings</code>) ends the daily words; your progress stays so you can carry on with <code>/start</code>. The same applies if you block the bot (it notices at the next delivery) or do not finish the setup after choosing a level. If you then do not use the bot for 12 months (no quiz answer, no <code>/word</code>, no change of settings), it erases all your data automatically.</li>
+<li><strong>Operation logs</strong> are deleted after 30 days.</li>
+<li><strong>Emails</strong> are deleted once the matter is resolved and no legal retention duty applies.</li>
+</ul>`],
+        ['Contact by email', '<p>If you write to us, we use your message only to reply (Art. 6(1)(f) GDPR) and delete it once the matter is resolved.</p>'],
+        ['Your rights', `<p>You have the right to access, rectification, erasure, restriction of processing, data portability and objection (Art. 15–21 GDPR). In the bot, <code>/mydata</code> shows an overview of your stored data, <code>/settings</code> changes level, language and time, and <code>/delete</code> erases everything. For a complete copy (e.g. your quiz results per word), email the controller and give your Telegram user ID, which <code>/mydata</code> shows; we may ask you to confirm the request through Telegram. You may object to the processing of operation logs (Art. 6(1)(f) GDPR) on grounds relating to your particular situation (Art. 21 GDPR). For data that Telegram processes, please contact Telegram. You may complain to any data protection supervisory authority, for example the Hessian Commissioner for Data Protection and Freedom of Information (Der Hessische Beauftragte für Datenschutz und Informationsfreiheit), Gustav-Stresemann-Ring 1, 65189 Wiesbaden, Germany.</p>`],
+        ['Children', '<p>The bot is not directed at children under 13. We do not knowingly collect data from children.</p>'],
+        ['Changes', '<p>If the bot processes data differently (for example through a new feature or a paid offer), we update this policy before the change takes effect. The version published here applies; the date at the top shows when it was last updated.</p>'],
+      ],
+    },
+    todos: [
+      'Before publishing: add the live bot\'s public @username to the subject line (the test bot is @enigma_sandbox_bot; the bot calls itself "Daily German" in src/format.ts) and bump "stand" in apps.config.json.',
+      'Mini App section: keep it only if the live bot shows the "Flashcards üben" button (MINIAPP_LINK set, or CHANNEL_ID a numeric chat id; see src/cron.ts deckButton). Before that, give the Mini App a reset for its known-words list (CloudStorage key "known"), which /delete cannot reach, and name it in this section.',
+      'Telegram is described as an independent controller, not a processor (the bot\'s docs/privacy-notice.md calls it a processor with SCC/DPF safeguards, which cannot be asserted for Telegram). Have the Art. 49(1)(b) GDPR transfer basis checked before publishing.',
+      'Cloudflare: confirm that Cloudflare\'s Data Processing Addendum (part of its self-serve terms) covers the account that hosts the german-telegram Worker.',
+    ],
+  },
 };
 
 export { N as TOKEN };
